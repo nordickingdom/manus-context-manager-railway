@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manus Context Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>Manus Context Manager</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showCreateProjectModal()">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav">
+                    <a href="#" class="nav-item active" data-view="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="nav-item" data-view="projects">
+                        <i class="fas fa-folder"></i>
+                        Projects
+                    </a>
+                    <a href="#" class="nav-item" data-view="contexts">
+                        <i class="fas fa-file-alt"></i>
+                        Contexts
+                    </a>
+                    <a href="#" class="nav-item" data-view="tasks">
+                        <i class="fas fa-tasks"></i>
+                        Tasks
+                    </a>
+                    <a href="#" class="nav-item" data-view="generator">
+                        <i class="fas fa-magic"></i>
+                        Context Generator
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view active">
+                    <div class="view-header">
+                        <h2>Dashboard</h2>
+                        <p>Overview of your Manus context management</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-projects">0</h3>
+                                <p>Total Projects</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-tasks">0</h3>
+                                <p>Total Tasks</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-contexts">0</h3>
+                                <p>Total Contexts</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="completion-rate">0%</h3>
+                                <p>Completion Rate</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="recent-projects">
+                            <h3>Recent Projects</h3>
+                            <div id="recent-projects-list" class="project-list">
+                                <!-- Projects will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects View -->
+                <div id="projects-view" class="view">
+                    <div class="view-header">
+                        <h2>Projects</h2>
+                        <button class="btn btn-primary" onclick="showCreateProjectModal()">
+                            <i class="fas fa-plus"></i> New Project
+                        </button>
+                    </div>
+                    
+                    <div id="projects-list" class="projects-grid">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Contexts View -->
+                <div id="contexts-view" class="view">
+                    <div class="view-header">
+                        <h2>Contexts</h2>
+                        <select id="context-project-filter" class="form-select">
+                            <option value="">All Projects</option>
+                        </select>
+                    </div>
+                    
+                    <div id="contexts-list" class="contexts-list">
+                        <!-- Contexts will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Tasks View -->
+                <div id="tasks-view" class="view">
+                    <div class="view-header">
+                        <h2>Tasks</h2>
+                        <div class="view-filters">
+                            <select id="task-project-filter" class="form-select">
+                                <option value="">All Projects</option>
+                            </select>
+                            <select id="task-status-filter" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="tasks-list" class="tasks-list">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Context Generator View -->
+                <div id="generator-view" class="view">
+                    <div class="view-header">
+                        <h2>Context Generator</h2>
+                        <p>Generate context for your Manus AI sessions</p>
+                    </div>
+                    
+                    <div class="generator-form">
+                        <div class="form-group">
+                            <label for="generator-project">Select Project</label>
+                            <select id="generator-project" class="form-select" required>
+                                <option value="">Choose a project...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="generator-task-type">Task Type</label>
+                            <select id="generator-task-type" class="form-select" required>
+                                <option value="feature">Feature Development</option>
+                                <option value="bugfix">Bug Fix</option>
+                                <option value="refactor">Code Refactoring</option>
+                                <option value="documentation">Documentation</option>
+                                <option value="testing">Testing</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="generator-description">Task Description</label>
+                            <textarea id="generator-description" class="form-textarea" rows="4" 
+                                placeholder="Describe what you want to accomplish in this Manus session..." required></textarea>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-large" onclick="generateContext()">
+                            <i class="fas fa-magic"></i> Generate Context for Manus
+                        </button>
+                        
+                        <div id="generated-context" class="generated-context" style="display: none;">
+                            <h3>Generated Context</h3>
+                            <div class="context-actions">
+                                <button class="btn btn-secondary" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy"></i> Copy to Clipboard
+                                </button>
+                                <button class="btn btn-secondary" onclick="downloadContext()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+                            <pre id="context-output"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Project Modal -->
+    <div id="create-project-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Project</h3>
+                <button class="modal-close" onclick="hideCreateProjectModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-project-form">
+                    <div class="form-group">
+                        <label for="project-name">Project Name</label>
+                        <input type="text" id="project-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-github">GitHub Repository (optional)</label>
+                        <input type="url" id="project-github" class="form-input" 
+                               placeholder="https://github.com/username/repo">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideCreateProjectModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createProject()">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
